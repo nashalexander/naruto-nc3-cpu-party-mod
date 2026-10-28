@@ -1,0 +1,47 @@
+--- a/main.cpp
++++ b/main.cpp
+@@ -97,6 +97,9 @@
+ 
+ #include "CLI.h"
+ 
++#include <atomic>
++std::atomic<uint64_t> nc3LegacyFrames{0};
++
+ // TODO: uniform variable spelling
+ 
+ bool RunningSomething;
+@@ -646,6 +649,7 @@
+ 
+             // emulate
+             u32 nlines = NDS::RunFrame();
++            ++nc3LegacyFrames;
+ 
+             if (ROMManager::NDSSave)
+                 ROMManager::NDSSave->CheckFlush();
+@@ -3242,6 +3246,8 @@
+ 
+     return QApplication::event(event);
+ }
++
++#include "NC3LegacyControl.h"
+ 
+ int main(int argc, char** argv)
+ {
+@@ -3377,6 +3383,7 @@
+ 
+     mainWindow->preloadROMs(options->dsRomPath, options->gbaRomPath, options->boot);
+ 
++    nc3StartLegacyControl(&melon);
+     int ret = melon.exec();
+ 
+     emuThread->emuStop();
+--- a/main.h
++++ b/main.h
+@@ -57,6 +57,7 @@
+     void emuStop();
+     void emuFrameStep();
+ 
++    bool nc3Paused() const { return EmuStatus.load() == 2; }
+     bool emuIsRunning();
+     bool emuIsActive();
+ 

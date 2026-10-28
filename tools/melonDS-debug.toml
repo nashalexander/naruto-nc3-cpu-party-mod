@@ -1,0 +1,36 @@
+# melonDS 1.1. Fresh native states are required; supplied format-9 states
+# cannot be loaded by format-13 melonDS. Do not edit their version headers.
+[Emu]
+ConsoleType = 0
+DirectBoot = true
+ExternalBIOSEnable = false
+
+[JIT]
+Enable = false
+
+[Instance0]
+
+[Instance0.Gdb]
+Enabled = true
+
+[Instance0.Gdb.ARM9]
+Port = 3333
+BreakOnStartup = true
+
+[Instance0.Gdb.ARM7]
+Port = 3334
+BreakOnStartup = false
+
+[Instance0.Keyboard]
+A = 88
+B = 90
+X = 83
+Y = 65
+Start = 16777220
+Select = 16777219
+Right = 16777236
+Left = 16777234
+Up = 16777235
+Down = 16777237
+L = 81
+R = 87

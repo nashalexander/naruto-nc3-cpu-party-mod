@@ -1,0 +1,63 @@
+# Game images, firmware, battery saves and emulator snapshots (any directory).
+*.[nN][dD][sS]
+*.[sS][rR][lL]
+*.[sS][aA][vV]
+*.[sS][aA][vV].*
+*.[dD][sS][vV]
+*.[sS][vV][sS]
+*.[mM][lL][nN]
+*.[mM][lL][nN].*
+*.state
+*.state.*
+*.bin
+
+# Private inputs, ROM-derived extractions, captures, decompilation and builds.
+/svs/
+/workbench/
+
+# Keep authored tool configuration/patches and upstream source URLs only.
+# Downloaded applications, SDKs, Python packages and third-party trees stay local.
+/tools/*
+!/tools/README.md
+!/tools/melonDS-debug.toml
+!/tools/reference/
+/tools/reference/*
+!/tools/reference/sources.json
+!/tools/reference/nc3-frontend-control.patch
+!/tools/reference/nc3-legacy-control.patch
+
+# Generated packages/downloads, including archives that could contain ROMs.
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.tar.xz
+*.tar.bz2
+*.part
+
+# Python, native build output and temporary files.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.o
+*.a
+*.so
+*.elf
+*.log
+*.tmp
+*.bak
+*~
+
+# Local editor, credentials and agent settings.
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.env
+.env.*
+/.aws/
+/.codex/
+/.agents/

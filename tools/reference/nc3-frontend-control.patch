@@ -1,0 +1,39 @@
+--- a/main.cpp
++++ b/main.cpp
+@@ -81,6 +81,8 @@
+ std::optional<LibPCap> pcap;
+ Net net;
+ 
++#include "NC3Control.h"
++
+ 
+ QElapsedTimer sysTimer;
+ 
+@@ -386,6 +388,7 @@
+             win->toggleFullscreen();
+     }
+ 
++    nc3StartControl(&melon);
+     int ret = melon.exec();
+ 
+     delete options;
+--- a/EmuThread.h
++++ b/EmuThread.h
+@@ -137,6 +137,7 @@
+     void updateVideoSettings() { videoSettingsDirty = true; }
+     void updateVideoRenderer() { videoSettingsDirty = true; lastVideoRenderer = -1; }
+ 
++    std::atomic<uint64_t> nc3FrameCount{0};
+     int frontBuffer = 0;
+     QMutex frontBufferLock;
+ 
+--- a/EmuThread.cpp
++++ b/EmuThread.cpp
+@@ -307,6 +307,7 @@
+             else
+             {
+                 nlines = emuInstance->nds->RunFrame();
++                ++nc3FrameCount;
+             }
+ 
+             if (emuInstance->ndsSave)

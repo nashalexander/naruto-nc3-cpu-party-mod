@@ -1,0 +1,187 @@
+{
+  "status": "Desktop Party CPU behavior verified; Delta pending",
+  "source_sha256": "6ca0d8af595730515acd591cbee3879a6c5ebaf6889422d375b1c841a832d5cc",
+  "target_sha256": "7d136eecf654d65d51e98034b39398d04716f8362852d2d5dc87cd7462a692db",
+  "payload_base": 37552128,
+  "payload_size": 4076,
+  "symbols": {
+    "add_label": 37556104,
+    "character_conflicts": 37556204,
+    "character_hook": 37554504,
+    "character_hook.cpu_label": 37556190,
+    "character_hook.p1_label": 37556124,
+    "count_hook": 37552220,
+    "cpu_profile_gate": 37556040,
+    "exchange_hook": 37552344,
+    "generic_cpu_ai": 37556130,
+    "lobby_hook": 37553636,
+    "local_cpu_prepare": 37556004,
+    "original_character": 37555952,
+    "original_count": 37555896,
+    "original_exchange": 37555912,
+    "original_lobby": 37555884,
+    "original_packet": 37555924,
+    "original_preview": 37555992,
+    "original_scene": 37555976,
+    "original_slot": 37555936,
+    "original_technique": 37555964,
+    "packet_hook": 37553580,
+    "payload_end": 37614008,
+    "prepare_hook": 37555548,
+    "preview_hook": 37554320,
+    "scene_hook": 37552128,
+    "slot_hook": 37552252,
+    "state": 37613568,
+    "technique_hook": 37555812
+  },
+  "hooks": [
+    {
+      "address": 33952100,
+      "before": "f84f2de9",
+      "after": "1ebd0dea",
+      "hook": "lobby_hook"
+    },
+    {
+      "address": 33687496,
+      "before": "24109fe5",
+      "after": "23be0eea",
+      "hook": "count_hook"
+    },
+    {
+      "address": 33687352,
+      "before": "08402de9",
+      "after": "66be0eea",
+      "hook": "exchange_hook"
+    },
+    {
+      "address": 33618556,
+      "before": "10402de9",
+      "after": "ca020fea",
+      "hook": "packet_hook"
+    },
+    {
+      "address": 33687024,
+      "before": "64209fe5",
+      "after": "a1be0eea",
+      "hook": "slot_hook"
+    },
+    {
+      "address": 33973372,
+      "before": "f84f2de9",
+      "after": "31a90dea",
+      "hook": "character_hook"
+    },
+    {
+      "address": 33988144,
+      "before": "f84f2de9",
+      "after": "0b9c0dea",
+      "hook": "technique_hook"
+    },
+    {
+      "address": 33695408,
+      "before": "1c209fe5",
+      "after": "52b60eea",
+      "hook": "scene_hook"
+    },
+    {
+      "address": 33871456,
+      "before": "70402de9",
+      "after": "8a0c0eea",
+      "hook": "preview_hook"
+    },
+    {
+      "address": 33741180,
+      "before": "3aebffeb",
+      "after": "f68c0eeb",
+      "hook": "prepare_hook"
+    },
+    {
+      "address": 33795812,
+      "before": "700000ba",
+      "after": "17580eea",
+      "hook": "cpu_profile_gate"
+    }
+  ],
+  "state_size": 440,
+  "arm9_rom_offset": 54525952,
+  "arm9_size": 787412,
+  "header_crc": 23431,
+  "source_files_sha256": {
+    "scripts/build_party_cpu.py": "9d058b987e33bb870c521ba44394ad461bb5c897cd3905ca28aba9e966160131",
+    "scripts/party_cpu/mod.c": "fc71cb40c0eb3b7779d31635a3b5f6560d2b1a7ff178c3844a034791764829dd",
+    "scripts/party_cpu/mod.ld": "a3f077fa4f6f45348267a9c2877cdb82471b2ba413f7d5df86f2e20474633b4e"
+  },
+  "cpu_ai_profile": 16,
+  "version": "party-cpu-prototype-2",
+  "runtime_validation": "party-cpu-runtime-validation.json",
+  "arm9_original_region_diff": [
+    {
+      "ram_address": "0x2000800",
+      "original": "01c3a0e3",
+      "replacement": "e4fa02ea"
+    },
+    {
+      "ram_address": "0x2005b3e",
+      "original": "3e",
+      "replacement": "3d"
+    },
+    {
+      "ram_address": "0x200fa7c",
+      "original": "10402de9",
+      "replacement": "ca020fea"
+    },
+    {
+      "ram_address": "0x20205f0",
+      "original": "64209fe5",
+      "replacement": "a1be0eea"
+    },
+    {
+      "ram_address": "0x2020738",
+      "original": "08402de9",
+      "replacement": "66be0eea"
+    },
+    {
+      "ram_address": "0x20207c8",
+      "original": "24109fe5",
+      "replacement": "23be0eea"
+    },
+    {
+      "ram_address": "0x20226b0",
+      "original": "1c209fe5",
+      "replacement": "52b60eea"
+    },
+    {
+      "ram_address": "0x202d97c",
+      "original": "3aebff",
+      "replacement": "f68c0e"
+    },
+    {
+      "ram_address": "0x203aee4",
+      "original": "700000ba",
+      "replacement": "17580eea"
+    },
+    {
+      "ram_address": "0x204d660",
+      "original": "70402de9",
+      "replacement": "8a0c0eea"
+    },
+    {
+      "ram_address": "0x2061164",
+      "original": "f84f2de9",
+      "replacement": "1ebd0dea"
+    },
+    {
+      "ram_address": "0x206647c",
+      "original": "f84f2de9",
+      "replacement": "31a90dea"
+    },
+    {
+      "ram_address": "0x2069e30",
+      "original": "f84f2de9",
+      "replacement": "0b9c0dea"
+    }
+  ],
+  "bps_roundtrip": true,
+  "patch_sha256": "2feaf22bf074bf83466cdb4d4ba92359d35a93119fd55784b21ba120bc25d8e0",
+  "patch_size": 3735
+}
