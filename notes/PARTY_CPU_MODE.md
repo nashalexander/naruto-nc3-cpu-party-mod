@@ -1,19 +1,16 @@
 # Native Party Mode CPU work
 
-Requested behavior: Party Mode > Squad Leader presents an Add CPU button;
-one human plus at least one CPU can continue without a wireless guest. After
-choosing P1, the same console chooses a character for every CPU slot. This is
-the native Party implementation. The complete flow and a three-CPU round now
-work from a cold boot.
-Release: `dist/nc3-party-cpu-prototype.zip`; instructions: `dist/PARTY_CPU_README.md`.
+The patch adds 1–3 local CPU players to Party Mode > Squad Leader and lets
+one console choose each fighter. It retains native Party combat, menus, results,
+and rematches. See the [play guide](../dist/PARTY_CPU_README.md) and
+[build guide](../docs/BUILDING.md).
 
 ## Recovered interfaces
 
 - Squad-leader lobby tick: **0x02061164**, object phase at +0x0C. Phase 2 is the
   host lobby; 4 the member lobby; 5/7/8 perform fade/profile/config handshakes.
-  The supplied host object is 0x0218E7BC (dynamic allocation, not a fixed address).
+  Lobby objects are dynamically allocated; resolve them at runtime.
 - Live lobby input read: 0x0206197C, reached from cached input 0x020C3382.
-  Trace: `workbench/captures/party-lobby-input-reads/events.json` and DTCM dumps.
 - Multiplayer player-count query: **0x020207C8**, popcount of halfword
   **0x020C3488**. The native Start gate at 0x02061C74 requires count > 1.
 - Local slot/count/session globals: **0x020C6264**, **0x020C626C**,
@@ -25,24 +22,17 @@ Release: `dist/nc3-party-cpu-prototype.zip`; instructions: `dist/PARTY_CPU_READM
 - Multiplayer fighter loop: **0x0202D5BC**, distinct from the mission loop.
   At **0x0202D97C** it calls human preparation 0x0202866C; at
   **0x0202D990** it calls the shared fighter update 0x020293C4.
-  This supplies a candidate CPU-dispatch hook while retaining Party combat.
+  The patch hooks this call to prepare local CPUs while retaining Party combat.
 - Names use fixed-width text renderer **0x0207B18C**; main text renderer
   0x0207B100. These consume Shift-JIS pairs. Lobby name conversion is separate
   because wireless profile names are UTF-16.
 
-Reached functions are exported under `workbench/decompiled/`. The mistakenly
-named `dispatch_candidate.c` starts inside a function and must not be used as
-an authoritative function map; `mission_fighter_tick.c` uses the actual entry
-0x0203F3D4. Other `*_candidate.c` exports are exploratory only.
-
-## Injection workbench
+## Injection
 
 `scripts/build_party_cpu.py` compiles `scripts/party_cpu/mod.c` for ARM946E-S
-with local system Clang/LLD. It emits original-instruction trampolines, validates
-the original ROM SHA-256, and records each hook's original/replacement bytes.
-The working ROM remains under `workbench/party-mode/build/`. The release BPS
-is `dist/nc3-party-cpu.bps`, applied directly to the unchanged USA ROM. The
-bundle includes source, build metadata and runtime validation, without ROMs or saves.
+with Clang/LLD. It emits original-instruction trampolines, validates the original
+ROM SHA-256, and records each hook's original/replacement bytes. The release BPS
+applies directly to the original USA ROM.
 
 The executable payload is copied to **0x023D0000** by a stack-free startup shim.
 The SDK main-arena high limit at literal **0x02005B3C** is reduced from 0x023E0000
@@ -110,16 +100,15 @@ Mixed wireless-human/CPU sessions are unsupported.
 Current target SHA-256:
 `5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`.
 
-Prototype 4 was checked only at the CPU-add screen, as requested. The
-`v4-label-padded-*` captures verify native boot, the padded label and adding a
-CPU with X. The payload differs from the fully tested prototype 2 at only
-three bytes: the label's leading glyph and its horizontal draw coordinate.
+Prototype 4 was checked at the CPU-add screen for native boot, the padded
+label, and adding a CPU with X. The payload differs from the fully tested
+prototype 2 at only three bytes: the label's leading glyph and its horizontal draw coordinate.
 All other payload bytes, hooks and gameplay code match that baseline.
 Earlier full-round evidence below retains its own build checksum in the runtime
 report; these rounds were not rerun for the label change.
 
-The `v3-cold-release-*` captures in `workbench/party-mode/` exercise prototype 3
-from boot, without state loads, RAM probes or hotloading during that flow:
+Prototype 3 testing exercised the following flow from boot, without state
+loads, RAM probes, or hotloading:
 
 - Empty Squad Leader lobby; add CPU 1, 2 and 3 using DS X; Start without a wireless peer.
 - The then-current corner hint was captured; prototype 4 replaces it with the padded player-box label.
@@ -136,10 +125,9 @@ from boot, without state loads, RAM probes or hotloading during that flow:
 - Play Again reconstructs all four fighters at full health.
 - End Game returns to Mode Select and clears CPU state.
 
-The `v3-single-release-*` captures replay the exact build's empty lobby through a
-one-CPU Shikamaru/Naruto match and native results. This replay uses a state made
+A separate prototype 3 test replayed the empty lobby through a one-CPU
+Shikamaru/Naruto match and native results. This replay uses a state made
 by the patched ROM itself; it is separate from the no-state-load cold test.
-Earlier research captures and hotloader tooling are not the release proof.
 Player attacks and natural CPU damage were also exercised in earlier runtime
 captures. Actor +0x38 remains unclassified; it is not evidence for stock counts.
 
@@ -149,4 +137,4 @@ results/rematch/exit and the cold-test control audit. The report is
 `dist/party-cpu-runtime-validation.json`. `scripts/package_party_cpu.py` creates
 a BPS delta, independently applies it, compares the entire resulting ROM and
 checks every bundled file checksum. Other Party rules and the full roster/stage
-matrix are not exhaustively tested. Delta compatibility needs device testing.
+matrix are not exhaustively tested.

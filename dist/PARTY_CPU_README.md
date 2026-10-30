@@ -1,106 +1,77 @@
-# NC3 Party CPU prototype
+# Party CPU patch: patching and play guide
 
-This build adds local CPU players to **Party Mode > Squad Leader**. It uses the
-game's Party battles, character grid, stage/time selection and results screen.
-It supports **one human plus 1–3 CPUs** without another DS or wireless guest.
-
-## Play
-
-1. Enter **Party Mode**, then **Squad Leader**.
-2. Press **DS X** or touch **X ADD CPU** inside the next empty player box.
-   Repeat for more CPUs (three maximum). The label has extra left padding
-   and disappears when all three CPU slots are filled.
-3. Press **Start** once at least one CPU is present.
-4. Choose **Battle Royale**, a stage and a time limit normally.
-5. CPU slots begin unassigned and reserve no characters. Choose your character
-   and confirm **Yes**. The grid then controls **CPU 1**,
-   followed by CPU 2 and CPU 3 if added. The label on the left identifies the
-   current CPU. Use the normal grid, touch controls and L/R page buttons.
-   The confirmation starts on **No**; press Left once for **Yes**, then A.
-6. Confirm each CPU character. CPUs automatically keep and confirm their
-   default techniques. Choose P1's techniques normally and finish with Start.
-7. Press **Start** on the Objective screen to begin.
-
-After results, Start opens **Play again?**; Yes repeats the match with the same
-roster. End Game uses the game's existing disconnect screen; press Start there
-to return to Mode Select. Leaving Party Mode clears the added CPUs.
-
-The lobby retains the original wireless wording and Join artwork. **Start works
-with the added CPUs; no guest needs to join.** Normal character unlock rules and
-the native restriction against duplicate fighters remain. To start over with
-fewer CPUs, leave and re-enter Squad Leader.
+This patch adds **one human plus 1–3 CPUs** to **Party Mode > Squad Leader**.
+You choose each CPU's character and play through the game's Party battle flow.
+No second DS or wireless guest is needed.
 
 ## Apply the patch
 
-Apply **`nc3-party-cpu.bps` directly to the original USA ROM**.
-Expected original SHA-256:
+Use a BPS patcher to apply **`nc3-party-cpu.bps`** to an original
+**Naruto: Ninja Council 3 (USA)** ROM, game code **AN4E**, 64 MiB
+(67,108,864 bytes). Apply it directly to the original ROM.
 
-`6ca0d8af595730515acd591cbee3879a6c5ebaf6889422d375b1c841a832d5cc`
+| ROM | SHA-256 |
+| --- | --- |
+| Original | `6ca0d8af595730515acd591cbee3879a6c5ebaf6889422d375b1c841a832d5cc` |
+| Patched | `5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f` |
 
-With this project's local Flips:
-
-```sh
-tools/build/flips/flips --apply dist/nc3-party-cpu.bps \
-  'Naruto - Ninja Council 3 (USA).nds' workbench/build/nc3-party-cpu-applied.nds
-```
-
-Open **`workbench/build/nc3-party-cpu-applied.nds`** explicitly in melonDS.
-Verify the output with:
+For example, with Flips on your PATH and the patch in the current directory:
 
 ```sh
-sha256sum workbench/build/nc3-party-cpu-applied.nds
+flips --apply nc3-party-cpu.bps \
+  'Naruto - Ninja Council 3 (USA).nds' nc3-party-cpu.nds
+sha256sum nc3-party-cpu.nds
 ```
 
-Expected patched SHA-256:
-`5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`.
-It is byte-identical to the tested `nc3-party-cpu-research.nds`.
-The research launcher
-`scripts/run_melonds.sh` opens the original workbench ROM: select the patched
-output using melonDS's Open ROM command instead.
+Open the patched output in your emulator and boot normally. No scripts are
+needed to play.
 
-The command above assumes you are in the project root. If using the extracted
-ZIP elsewhere, select its `nc3-party-cpu.bps` and the original USA ROM in your
-BPS patcher; the resulting ROM must have the same patched SHA-256 above.
+## Play
 
-Use a copy of your battery save with the patched ROM's filename. Start the mode
-through the game's menus; save states from the original ROM or an earlier patch
-restore that build's code and must not be loaded into this updated ROM.
-No scripts are needed to play the patched ROM.
+1. Enter **Party Mode > Squad Leader**.
+2. Press **DS X** or touch **X ADD CPU** in the next empty player box.
+   Repeat to add up to three CPUs.
+3. Press **Start**, then choose **Battle Royale**, a stage, and a time limit.
+4. Choose P1's character and confirm **Yes**. Then choose CPU 1's character,
+   followed by CPU 2 and CPU 3 if added. The label on the left identifies the
+   active CPU. The normal grid, touch controls, and L/R page buttons work.
+5. At each character confirmation, **No** is selected initially. Press Left
+   once for **Yes**, then A. Confirmed fighters remain visible; future CPU
+   slots reserve no characters.
+6. CPUs automatically confirm their default techniques. Choose P1's techniques
+   normally and finish with **Start**.
+7. Press **Start** on the Objective screen to begin.
 
-## Player-box label in prototype 4
+After results, press Start to open **Play again?**. Yes repeats the match with
+the same roster. **End Game** opens the game's disconnect screen; press Start
+to return to Mode Select.
 
-The next empty player box reads **X ADD CPU**, with extra space before X.
-There is no corner hint. Press DS X or touch the player box to add a CPU.
+To restart with fewer CPUs, leave and re-enter Squad Leader. Leaving Party
+Mode clears the CPU roster. The add-CPU label disappears when all slots are
+filled. Native character unlocks and duplicate-character restrictions apply.
 
-## Selection fixes in prototype 2
+## Saves and troubleshooting
 
-- Future CPU slots stay empty until their turn, so their former defaults no
-  longer block P1's choices. Confirmed choices still follow native uniqueness
-  and unlock rules.
-- Confirmed idle fighters remain visible while later CPUs choose.
-- The Yes/No pointer matches the highlighted choice for each slot.
+- Use a copy of your battery save (`.sav`) with the patched ROM's base filename,
+  following your emulator's save import rules.
+- Boot through the menus. Save states from the original ROM or an earlier patch
+  restore that build's code and should not be loaded with this patch.
+- If **X ADD CPU** does not appear, check that you opened the patched ROM and
+  that its checksum matches the table above.
+- The lobby still shows wireless wording and Join artwork. Start works once a
+  CPU is added. No wireless guest needs to join.
 
-## Scope and validation
+## Tested behavior and limitations
 
-Battle Royale is the verified rule set. Desktop tests cover a complete round
-with one CPU, a cold-boot round with three CPUs, individual character selection,
-autonomous movement/attacks, natural damage, results, rematch and exit. The
-three-CPU roster tested was Naruto / Sasuke / Sakura / Shikamaru. CPUs share a
-basic combat AI; there is no per-character AI tuning or difficulty selector.
-Other Party rules and the full character/stage roster have not been exhaustively
-tested. Mixing CPUs with wireless guests is unsupported.
+Tests cover complete one-CPU and three-CPU Battle Royale
+rounds, individual character selection, CPU movement and attacks, natural
+damage, results, rematch, and exit. The tested three-CPU roster was
+Naruto / Sasuke / Sakura / Shikamaru.
 
-**Delta compatibility still needs device testing.** Desktop validation uses
-the project-local melonDS 0.9.5 interpreter. Mission data is unchanged by this
-Party build. Technical details and evidence are recorded in
-`notes/PARTY_CPU_MODE.md` and `party-cpu-runtime-validation.json`.
+The current release's lobby label was checked separately. Full-round checks
+were performed on earlier builds with the same gameplay code; the runtime
+report records the build checksums for those checks.
 
-To rebuild the research ROM in this workbench:
-
-```sh
-python3 scripts/build_party_cpu.py
-```
-
-The builder requires Clang/LLD and LLVM tools. Sources, original-byte assertions,
-the ARM9 reservation/bootstrap and hook metadata are included with the patch.
-The release bundle contains no ROM or save files.
+CPUs share basic combat AI, with no difficulty selector or character-specific
+tuning. Other Party rules and the full character/stage roster have not been
+exhaustively tested. Mixing CPUs with wireless guests is unsupported.

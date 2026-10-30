@@ -1,7 +1,7 @@
 # Party CPU screenshots
 
 These are unedited melonDS 0.9.5 window captures made with normal controller
-input on the Party CPU patch. No ROM, save states or RAM dumps are included here.
+input on the Party CPU patch.
 
 Lobby screenshot build SHA-256:
 `5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`.

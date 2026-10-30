@@ -1,99 +1,49 @@
-# Live debugger baseline — 2026-10-26
+# ARM9 debugger baseline
 
-Network and desktop access succeeded through reviewed commands outside the
-default sandbox. No system packages were installed. All new downloads, source,
-binaries, settings, working ROM/state copies, and Ghidra project data stay here.
+These initial observations establish the ARM9 address mapping for the original
+USA ROM. For the completed patch, see the [Party CPU notes](PARTY_CPU_MODE.md).
 
-## Tools actually installed and exercised
+## Configuration
 
-- melonDS **1.1**, locally built from upstream tag archive with
-  `ENABLE_GDBSTUB=ON`, `ENABLE_JIT=OFF`, `RelWithDebInfo`, Qt6, X11 frontend.
-- ENet **1.3.18**, locally built and statically linked to satisfy its dependency.
-- Existing system GDB, ARM target, connected to local TCP **3333**.
-- Ghidra **12.2**, upstream release zip, SHA-256 checked against GitHub's release
-  digest. Requires **Java 25**; local Temurin **25.0.5+8** was downloaded and
-  checked against Adoptium's package checksum. Java 21 was also downloaded before
-  inspecting this release's minimum version; it is unused.
-- `python-xlib` **0.33** and `six` **1.17.0**, installed only to `tools/python`.
+The baseline used melonDS 1.1 with `ENABLE_GDBSTUB=ON`, `ENABLE_JIT=OFF`,
+`RelWithDebInfo`, and the Qt6 X11 frontend. GDB connected to TCP port **3333**.
+`Gdb.Enabled` belongs inside `Instance0` in the TOML configuration; see
+`tools/melonDS-debug.toml`.
 
-Download metadata and receipts are in `tools/downloads/`. Ghidra's Java home
-and settings are confined by `scripts/run_ghidra.sh`. Successful raw ARM9 import
-is recorded in `workbench/captures/ghidra-import.log`; the project is
-`workbench/ghidra/NC3.gpr`, program `/arm9.bin`, processor
-`ARM:LE:32:v5t:default`, base `0x02000000`. Automatic analysis was deliberately
-disabled for this baseline; instruction/data boundaries are not recovered yet.
+For static analysis, import the raw ARM9 into Ghidra with processor
+`ARM:LE:32:v5t:default` and base address **0x02000000**. Instruction/data
+boundaries require analysis; a successful import alone does not establish them.
 
-## G1 evidence
+## Startup trace
 
-The original game boots using built-in BIOS/firmware. Captures show its publisher
-screen, NC3 title, and Data Select screen. Input was successfully sent to the
-emulator. A native format-13 save was created at `workbench/rom/nc3.ml1` on Data
-Select. This is a fresh game, not an imported supplied state; no supplied state
-has been visually validated yet. Native restore was tested with F1 and returned
-to Data Select with the emulator's "State loaded from slot 1" confirmation;
-see `workbench/captures/native-state-restored.png`.
+1. Entry PC: **0x02000800**.
+2. Breakpoint: **0x02000A78**.
+3. LR: **0x02000818**; caller: **0x02000814: bl 0x02000A78**.
+4. **0x02000A7C: ldr r1, [pc, #172]** reads **0x02000B30**.
+5. After stepping from the callee entry, PC is **0x02000A80** and R1 is
+   **0x000F9005**.
 
-The continuous debugger session captured:
+The literal maps to original ROM offset **0x4B30**; the load instruction maps
+to **0x4A7C**. The trace was reproduced on a second emulator run. This is
+startup initialization evidence; fighter dispatch is documented separately in
+the [fighter map](PHASE3_FIGHTER_MAP.md).
 
-1. Entry PC **`0x02000800`**.
-2. Breakpoint hit inside the live ARM9 at **`0x02000A78`**.
-3. **LR `0x02000818`**, with the actual caller instruction
-   **`0x02000814: bl 0x02000A78`** inspected in live RAM.
-4. **`0x02000A7C: ldr r1, [pc, #172]`** reads **`0x02000B30`**.
-   Memory contains **`0x000F9005`**; after two single steps from the callee entry,
-   PC is **`0x02000A80`** and **R1 is `0x000F9005`**.
-5. The literal matches original ROM offset **`0x4B30`**. The access instruction
-   maps to original ROM offset **`0x4A7C`**.
+## Replay
 
-This satisfies G1's reproducible live pause/caller/access proof. It is startup/CP15
-initialization evidence, not an actor or AI trace. The replay recipe is
-`scripts/arm9_startup_proof.gdb`; the exact sequence was executed interactively,
-then replayed successfully by that script on a second fresh emulator run. Both
-runs produced the same caller, accessed address, literal value, and post-step PC.
+From the repository root, launch the baseline emulator, then run GDB in another
+terminal:
 
-Evidence files:
-
-- `workbench/captures/first-gdb-connection.txt`
-- `workbench/captures/arm9-session.log`
-- `workbench/captures/mainram-startup-02000a80.bin`
-- `workbench/captures/rom-boot.png`
-- `workbench/captures/rom-title.png`
-- `workbench/captures/main-menu.png` (Data Select)
-- `workbench/captures/native-state-restored.png`
-- `workbench/rom/nc3.ml1`
-
-## Setup corrections and limits
-
-`Gdb.Enabled` must be inside **`Instance0`**, as shown in the corrected template.
-Explicit TOML parent tables avoid a startup serialization exception. The launcher
-sets `QT_QPA_PLATFORM=xcb` so the emulator can be operated and captured via X11.
-Targeted XSendEvent key events work here; XTest key injection did not reliably
-advance the title. The helper restricts itself to visible melonDS windows.
-
-melonDS 1.1's debug stub entered a tight loop reporting `receiving from stream 0`
-after the first GDB disconnect. A reconnect attempt failed. The affected project
-processes were stopped, the generated repetitive log was reduced to a bounded
-excerpt, and a clean emulator was launched. A **single continuous GDB session**
-then captured the successful trace. Avoid disconnect/reconnect on the same run;
-restart the project emulator for a new client. No emulator source modification
-was made. `arm9-startup-call.txt` records the failed reconnect, not proof.
-
-The original ROM and supplied states remain unchanged. There is no gameplay
-patch, verified AI dispatch, actor address, or multiplayer result yet. G2 still
-requires an actual coordinated two-instance connection experiment. The supplied
-format-9 states still need an older importer or fresh scene reproduction in 1.1;
-their structural validity does not establish runtime compatibility.
-
-## Commands
-
-```bash
+```sh
 bash scripts/run_melonds.sh
-# In another terminal, from this directory, on a fresh emulator startup:
-gdb -nx -q -x scripts/arm9_startup_proof.gdb
-# Ghidra GUI, with project-local Java and settings:
-bash scripts/run_ghidra.sh
 ```
 
-Desktop/debugger commands require the reviewed execution context; the default
-sandbox still denies network and local socket access. The active development
-session has demonstrated the reviewed path works.
+```sh
+gdb -nx -q -x scripts/arm9_startup_proof.gdb
+```
+
+The tested melonDS 1.1 stub failed to reconnect after a debugger disconnect.
+Restart the emulator for each new GDB session. The X11 launcher uses
+`QT_QPA_PLATFORM=xcb`; targeted XSendEvent input worked in this configuration.
+
+Legacy format-9 save states require compatible emulator support. The
+[multiplayer notes](PHASE2_MULTIPLAYER.md) describe testing with melonDS 0.9.5.

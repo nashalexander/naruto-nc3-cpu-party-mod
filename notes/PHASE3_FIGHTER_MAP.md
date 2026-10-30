@@ -4,13 +4,12 @@ This map is for the original AN4E ROM, SHA-256
 `6ca0d8af595730515acd591cbee3879a6c5ebaf6889422d375b1c841a832d5cc`.
 Findings combine controlled frame captures, original-byte-asserted RAM probes,
 native hardware watchpoints on the emulator's backing RAM, and the emulated
-ARM9 registers/instruction at each write. The emulator was launched as GDB's own
-child; no system ptrace policy was changed. These recovered native AI and actor
+ARM9 registers/instruction at each write. These recovered native AI and actor
 interfaces support the [Party CPU implementation](PARTY_CPU_MODE.md).
 
 ## Actor state and copies
 
-The supplied Naruto-versus-Kiba mission has two main fighter-state pointers:
+The tested Naruto-versus-Kiba mission has two main fighter-state pointers:
 
 | Location | Observed meaning | P1 | CPU |
 |---|---|---|---|
@@ -50,7 +49,6 @@ writing only working X `0x021E80EC` shifts the current rendered pass but is
 overwritten. Writing source X `0x021E7E64` persists. This distinction was checked
 over 2 and 5 frames, not inferred from a single screenshot.
 
-Controlled captures/probes are under `workbench/controlled-mission/`.
 `scripts/capture_mission.py` replays the idle/walking experiment. The optional
 legacy frontend shim requires a fully paused emulation thread for dumps/probes,
 and every probe requires matching original bytes. No ROM bytes are written.
@@ -77,9 +75,8 @@ CPU: 0203F6F4 -> 0203AC54 (prepare CPU action)
      0203F734 -> 020293C4 (common fighter update)
 ```
 
-This is live mission dispatch evidence. The corresponding multiplayer path has
-not yet been traced to these functions; G4 is not passed merely because a real
-multiplayer match exists.
+This is live mission dispatch evidence. The later multiplayer dispatch hook is documented in the
+[Party CPU notes](PARTY_CPU_MODE.md).
 
 ## Coordinate writers and validated callers
 
@@ -118,21 +115,14 @@ The X writes propagate in this observed order for four successive walking frames
 Copy helper `0x02006924` takes **R0=source, R1=destination, R2=length**; do not
 assume the libc memcpy argument order. Both reached callers use length `0x134`.
 
-Trace artifacts include `workbench/captures/coordinate-writes/events.json`,
-`cpu-field-writes/events.json`, `player-input-writes/events.json`, their per-hit
-DTCM dumps, and `legacy-native-session.log`. The watchpoint script is
-`scripts/trace_coordinate_writes.py`; it logs bounded events and matching opcodes.
+The watchpoint script is `scripts/trace_coordinate_writes.py`; it logs bounded
+events and matching opcodes.
 
 ## Battle-end objective recovery
 
 Setting Kiba's current HP to zero triggers Finished, but the mission then reports
 **Failed** with "Some techniques should be done up close!". The selected mission
-requires an Uzumaki Barrage finish. Therefore this encounter is not yet a reusable
-free battle, and a health cheat or a renamed mission must not be counted as the
-requested mod. Subsequent constructor/resource traces recovered the character
-and AI presets, plus existing generic knockout goal 7. A RAM-only goal-7
-diagnostic reaches success after the death animation. The ROM prototype now
-uses that goal with playable Sasuke and his native AI preset. A normal Naruto
-victory, successful result, saving/menu return and fresh match reset are verified.
-The later two-choice menu build also verifies a natural victory against Sakura.
-See the Phase 5 and Phase 6 notes.
+requires an Uzumaki Barrage finish. This mission-specific objective makes the
+encounter unsuitable as a general versus battle. Subsequent resource traces identified a generic knockout goal,
+but the released CPU patch uses native Party battles instead. See the
+[Party implementation](PARTY_CPU_MODE.md) for the active design.

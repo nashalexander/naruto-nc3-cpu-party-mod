@@ -1,27 +1,15 @@
-# NC3 Party CPU patch
+# Party CPU release files
 
-Use **`nc3-party-cpu.bps`** for **Party Mode > Squad Leader > X ADD CPU**.
-This supports one human plus 1–3 CPUs and lets you choose each CPU character.
+Apply [nc3-party-cpu.bps](nc3-party-cpu.bps) to the original USA ROM.
+The [patching and play guide](PARTY_CPU_README.md) contains checksums,
+instructions, save handling, and known limitations.
 
-From the project root, run:
+| File | Purpose |
+| --- | --- |
+| `nc3-party-cpu.bps` | BPS patch for the original USA ROM |
+| `party-cpu-build.json` | Build metadata, hook bytes, and source hashes |
+| `party-cpu-runtime-validation.json` | Recorded checks and validation scope |
+| `party-cpu-checksums.sha256` | Checksums using release-bundle paths |
 
-```sh
-tools/build/flips/flips --apply dist/nc3-party-cpu.bps \
-  'Naruto - Ninja Council 3 (USA).nds' workbench/build/nc3-party-cpu-applied.nds
-sha256sum workbench/build/nc3-party-cpu-applied.nds
-```
-
-The output must have SHA-256:
-
-`5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`
-
-Open **`workbench/build/nc3-party-cpu-applied.nds`** explicitly in melonDS.
-Boot normally, using a copy of your `.sav` progress file; do not load an old
-save state. The research launcher `scripts/run_melonds.sh` opens the original
-workbench ROM, so use melonDS's Open ROM command to select this output instead.
-
-[Full play/save/patch instructions](PARTY_CPU_README.md) ·
-[Patch bundle](nc3-party-cpu-prototype.zip)
-
-This repository's release artifacts use the native Party method. Apply the
-Party patch directly to the original baseline ROM.
+In the bundle, `README.md` is the play guide (`PARTY_CPU_README.md` here).
+Source paths in the checksum manifest are relative to the bundle root.
