@@ -1,7 +1,7 @@
 {
-  "status": "Desktop Party CPU behavior verified; Delta pending",
+  "status": "CPU-add lobby label verified; previous gameplay validation attached",
   "source_sha256": "6ca0d8af595730515acd591cbee3879a6c5ebaf6889422d375b1c841a832d5cc",
-  "target_sha256": "7d136eecf654d65d51e98034b39398d04716f8362852d2d5dc87cd7462a692db",
+  "target_sha256": "5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f",
   "payload_base": 37552128,
   "payload_size": 4076,
   "symbols": {
@@ -108,11 +108,11 @@
   "header_crc": 23431,
   "source_files_sha256": {
     "scripts/build_party_cpu.py": "9d058b987e33bb870c521ba44394ad461bb5c897cd3905ca28aba9e966160131",
-    "scripts/party_cpu/mod.c": "fc71cb40c0eb3b7779d31635a3b5f6560d2b1a7ff178c3844a034791764829dd",
+    "scripts/party_cpu/mod.c": "4fc27add8d7fad95343ececd2962b346bf88fecff828c583e3fda1b07b45e668",
     "scripts/party_cpu/mod.ld": "a3f077fa4f6f45348267a9c2877cdb82471b2ba413f7d5df86f2e20474633b4e"
   },
   "cpu_ai_profile": 16,
-  "version": "party-cpu-prototype-2",
+  "version": "party-cpu-prototype-4",
   "runtime_validation": "party-cpu-runtime-validation.json",
   "arm9_original_region_diff": [
     {
@@ -182,6 +182,6 @@
     }
   ],
   "bps_roundtrip": true,
-  "patch_sha256": "2feaf22bf074bf83466cdb4d4ba92359d35a93119fd55784b21ba120bc25d8e0",
-  "patch_size": 3735
+  "patch_sha256": "9bcc2c081e2627dece77e7c8f25afd218ce63a35e9c6bda4d21203bdcec4cf7a",
+  "patch_size": 3736
 }

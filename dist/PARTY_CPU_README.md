@@ -7,8 +7,9 @@ It supports **one human plus 1–3 CPUs** without another DS or wireless guest.
 ## Play
 
 1. Enter **Party Mode**, then **Squad Leader**.
-2. Touch **+ ADD CPU** in the next empty member row. Repeat for more CPUs
-   (three maximum). The emulator/DS X button also adds a CPU.
+2. Press **DS X** or touch **X ADD CPU** inside the next empty player box.
+   Repeat for more CPUs (three maximum). The label has extra left padding
+   and disappears when all three CPU slots are filled.
 3. Press **Start** once at least one CPU is present.
 4. Choose **Battle Royale**, a stage and a time limit normally.
 5. CPU slots begin unassigned and reserve no characters. Choose your character
@@ -51,7 +52,7 @@ sha256sum workbench/build/nc3-party-cpu-applied.nds
 ```
 
 Expected patched SHA-256:
-`7d136eecf654d65d51e98034b39398d04716f8362852d2d5dc87cd7462a692db`.
+`5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`.
 It is byte-identical to the tested `nc3-party-cpu-research.nds`.
 The research launcher
 `scripts/run_melonds.sh` opens the original workbench ROM: select the patched
@@ -65,6 +66,11 @@ Use a copy of your battery save with the patched ROM's filename. Start the mode
 through the game's menus; save states from the original ROM or an earlier patch
 restore that build's code and must not be loaded into this updated ROM.
 No scripts are needed to play the patched ROM.
+
+## Player-box label in prototype 4
+
+The next empty player box reads **X ADD CPU**, with extra space before X.
+There is no corner hint. Press DS X or touch the player box to add a CPU.
 
 ## Selection fixes in prototype 2
 

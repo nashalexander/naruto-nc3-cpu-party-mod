@@ -54,6 +54,11 @@ Original ARM7 and filesystem file mappings remain unchanged.
 
 ## Implemented behavior
 
+The next empty player box reads **X ADD CPU** using the native fullwidth
+Shift-JIS font. Its draw origin is (60, 78 + 32 × CPU count), adding eight
+pixels of left padding. The old corner hint is removed. The label hides at the
+three-CPU limit; touch controls and the existing X key handler are unchanged.
+
 Eleven ARM9 hooks provide the lobby button, local participant count/names, packet
 exchange, sequential character selection, default CPU technique confirmation,
 CPU preparation, selector rendering and mode cleanup. The native rules,
@@ -102,13 +107,22 @@ Mixed wireless-human/CPU sessions are unsupported.
 
 ## Validation
 
-Final target SHA-256:
-`7d136eecf654d65d51e98034b39398d04716f8362852d2d5dc87cd7462a692db`.
+Current target SHA-256:
+`5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`.
 
-The `v2-cold-release-*` captures in `workbench/party-mode/` exercise the exact build
+Prototype 4 was checked only at the CPU-add screen, as requested. The
+`v4-label-padded-*` captures verify native boot, the padded label and adding a
+CPU with X. The payload differs from the fully tested prototype 2 at only
+three bytes: the label's leading glyph and its horizontal draw coordinate.
+All other payload bytes, hooks and gameplay code match that baseline.
+Earlier full-round evidence below retains its own build checksum in the runtime
+report; these rounds were not rerun for the label change.
+
+The `v3-cold-release-*` captures in `workbench/party-mode/` exercise prototype 3
 from boot, without state loads, RAM probes or hotloading during that flow:
 
-- Empty Squad Leader lobby; add CPU 1, 2 and 3; Start without a wireless peer.
+- Empty Squad Leader lobby; add CPU 1, 2 and 3 using DS X; Start without a wireless peer.
+- The then-current corner hint was captured; prototype 4 replaces it with the padded player-box label.
 - Battle Royale, Bamboo Grove, native selected time 60.
 - All future CPU portraits/cursors are blank and reserve no character.
 - P1 can reach confirmation for former CPU defaults 3, 32 and 35, declining
@@ -122,7 +136,7 @@ from boot, without state loads, RAM probes or hotloading during that flow:
 - Play Again reconstructs all four fighters at full health.
 - End Game returns to Mode Select and clears CPU state.
 
-The `v2-single-release-*` captures replay the exact build's empty lobby through a
+The `v3-single-release-*` captures replay the exact build's empty lobby through a
 one-CPU Shikamaru/Naruto match and native results. This replay uses a state made
 by the patched ROM itself; it is separate from the no-state-load cold test.
 Earlier research captures and hotloader tooling are not the release proof.

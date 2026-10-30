@@ -15,6 +15,8 @@ parser.add_argument('--prefix',default='cold-final')
 parser.add_argument('--from-lobby',action='store_true',help='Replay from a native lobby state of this exact build')
 parser.add_argument('--selection-regressions',action='store_true',help='Check blank CPUs, formerly reserved fighters and confirmation UI')
 parser.add_argument('--characters',help='Comma-separated test roster, using IDs 0–3 (default: 0,1,2,3 as needed)')
+parser.add_argument('--add-with-x',action='store_true',help='Add CPUs using the DS X button rather than touch')
+parser.add_argument('--lobby-only',action='store_true',help='Stop after adding CPUs and capturing the lobby')
 args=parser.parse_args()
 prefix=args.prefix
 counter=0
@@ -109,9 +111,13 @@ def host_ready(b):
 wait_for(host_ready,'fresh squad leader lobby');settle(80)
 record('empty-lobby',save=True)
 for i in range(args.cpus):
-    touch(120,90+32*i)
+    if args.add_with_x:press('x',after=30)
+    else:touch(120,90+32*i)
     wait_for(lambda b:struct.unpack_from('<I',b,0x3df004)[0]==i+1,'Add CPU '+str(i+1))
     record('added-cpu-'+str(i+1))
+if args.lobby_only:
+    print('CPU-add lobby captured; stopping before match setup.',flush=True)
+    raise SystemExit(0)
 press('start',after=20);scene(11)
 record('party-rules')
 touch(193,88);press('a',after=20);scene(8)

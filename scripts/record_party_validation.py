@@ -16,8 +16,8 @@ def read(name):return json.loads((CAP/(name+'.json')).read_text())
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--cold-prefix',default='v2-cold-release')
-    parser.add_argument('--single-prefix',default='v2-single-release')
+    parser.add_argument('--cold-prefix',default='v3-cold-release')
+    parser.add_argument('--single-prefix',default='v3-single-release')
     args=parser.parse_args()
     cold,single_prefix=args.cold_prefix,args.single_prefix
     build=json.loads((CAP/'build/build.json').read_text())
@@ -128,14 +128,19 @@ def main():
     end=max(i for i,r in enumerate(controls) if r['request'].get('path','').endswith(f'/{cold}-exit.bin'))
     ops=collections.Counter(r['request']['op'] for r in controls[start:end+1])
     assert not ops['probe-write'] and not ops['load']
+    x_add_presses=sum(r['request']['op']=='key-down' and r['request'].get('key')==83
+                      for r in controls[start:end+1])
+    assert x_add_presses>=3
     evidence=[p for p in CAP.glob(f'{cold}-*') if p.suffix in ('.json','.png')]
     evidence += [CAP/f'{single_prefix}-live.json',CAP/f'{single_prefix}-results.json',CAP/f'{single_prefix}-results.png']
-    report={'version':'party-cpu-prototype-2','target_sha256':build['target_sha256'],
+    report={'version':'party-cpu-prototype-3','target_sha256':build['target_sha256'],
             'source_sha256':build['source_sha256'],
             'emulator':'project-local melonDS 0.9.5 interpreter with frontend capture shim',
             'cold_boot':True,'add_cpu_button':True,'cpu_counts_exercised':[1,2,3],
             'complete_rounds_verified':{'three_cpus':'cold boot','one_cpu':'native lobby replay of same build'},
             'sequential_selection':['P1','CPU 1','CPU 2','CPU 3'],
+            'lobby_x_add_cpu_prompt':'bottom right, hidden at three-CPU limit',
+            'cpu_add_ds_x_presses':x_add_presses,
             'cold_roster':[0,1,2,3],'one_cpu_roster':[3,0],
             'unassigned_cpus_reserve_no_character':True,
             'p1_former_cpu_defaults_selectable':[3,32,35],

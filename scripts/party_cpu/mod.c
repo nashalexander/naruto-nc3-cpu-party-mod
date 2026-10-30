@@ -36,8 +36,8 @@ void scene_hook(u32 scene,u32 subscene) {
     original_scene(scene,subscene);
 }
 static const u8 add_label[] __attribute__((aligned(4))) = {
-    0x81,0x7b,0x81,0x40,0x82,0x60,0x82,0x63,0x82,0x63,0x81,0x40,
-    0x82,0x62,0x82,0x6f,0x82,0x74,0,0}; /* + ADD CPU, fullwidth SJIS */
+    0x82,0x77,0x81,0x40,0x82,0x60,0x82,0x63,0x82,0x63,0x81,0x40,
+    0x82,0x62,0x82,0x6f,0x82,0x74,0,0}; /* X ADD CPU, fullwidth SJIS */
 
 u32 count_hook(void) {
     return state.active ? 1 + state.cpus : original_count();
@@ -117,7 +117,8 @@ u32 lobby_hook(u32 object,u32 b,u32 c,u32 d) {
     if (result==7) reset_mode();
     if (B(object+12)==2 && state.cpus<3) {
         W(0x020d4020)=1;
-        ((void(*)(u32,u32,const u8*))0x0207b18c)(52,78+32*state.cpus,add_label);
+        /* Half a character of left padding keeps the label inside the box. */
+        ((void(*)(u32,u32,const u8*))0x0207b18c)(60,78+32*state.cpus,add_label);
     }
     return result;
 }

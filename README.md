@@ -9,6 +9,16 @@ Desktop melonDS tests cover complete one-CPU and three-CPU Battle Royale rounds.
 CPUs share basic AI; native character unlock and duplicate-character rules remain.
 Delta device compatibility is not yet verified.
 
+## Screenshots
+
+Actual melonDS captures from the Party CPU patch. Press DS X or touch
+**X ADD CPU** inside the next empty player box, choose each CPU's
+fighter, then start a local match.
+
+| Add a CPU in Squad Leader | Select a CPU character | Fight three CPUs |
+| :---: | :---: | :---: |
+| ![Squad Leader lobby with CPU 1 added and the padded X ADD CPU player-box label](docs/screenshots/add-cpu.png) | ![Choosing CPU 3 while previously confirmed fighters remain visible](docs/screenshots/cpu-character-select.png) | ![Naruto fighting in a local Party match against three CPUs](docs/screenshots/cpu-match.png) |
+
 ## Required baseline ROM
 
 Supply your own **Naruto - Ninja Council 3 (USA)** ROM, game code **AN4E**,
@@ -49,7 +59,7 @@ sha256sum workbench/build/nc3-party-cpu-applied.nds
 Expected patched SHA-256:
 
 ```text
-7d136eecf654d65d51e98034b39398d04716f8362852d2d5dc87cd7462a692db
+5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f
 ```
 
 Open that output explicitly in melonDS. Use a copy of your `.sav` progress file
@@ -82,6 +92,7 @@ they do not claim that every new build has been playtested.
 | `scripts/party_cpu/` | ARM9 hook source and linker script | Included |
 | `scripts/` | Builders, emulator tooling and research helpers | Included |
 | `notes/` | Reverse-engineering findings and validation limits | Included |
+| `docs/screenshots/` | Actual emulator screenshots used above | Included |
 | `dist/` | BPS patches, instructions and compact release reports | Included; ZIP packages ignored |
 | `tools/` | Local tool installations and downloads | Only authored config/patches and source URLs included |
 | `svs/` | Optional original research save states | Ignored |

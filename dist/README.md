@@ -1,6 +1,6 @@
 # NC3 Party CPU patch
 
-Use **`nc3-party-cpu.bps`** for **Party Mode > Squad Leader > + ADD CPU**.
+Use **`nc3-party-cpu.bps`** for **Party Mode > Squad Leader > X ADD CPU**.
 This supports one human plus 1–3 CPUs and lets you choose each CPU character.
 
 From the project root, run:
@@ -13,7 +13,7 @@ sha256sum workbench/build/nc3-party-cpu-applied.nds
 
 The output must have SHA-256:
 
-`7d136eecf654d65d51e98034b39398d04716f8362852d2d5dc87cd7462a692db`
+`5b86da28089a9c67c6978e584a4d36e5290a2337caca47193e1bb033d434265f`
 
 Open **`workbench/build/nc3-party-cpu-applied.nds`** explicitly in melonDS.
 Boot normally, using a copy of your `.sav` progress file; do not load an old
